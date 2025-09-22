@@ -1,5 +1,6 @@
-using p1_Ap1_RamonUreña.Components;
 using Microsoft.EntityFrameworkCore;
+using p1_Ap1_RamonUreña.Components;
+using p1_Ap1_RamonUreña.DAL;
 
 namespace p1_Ap1_RamonUreña
 {
@@ -9,11 +10,15 @@ namespace p1_Ap1_RamonUreña
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+            var ConStr = builder.Configuration.GetConnectionString("SqlConStr")
+                ;
+            builder.Services.AddDbContext<Context>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
 
             var app = builder.Build();
 
