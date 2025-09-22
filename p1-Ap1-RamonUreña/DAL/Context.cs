@@ -1,7 +1,16 @@
-﻿namespace p1_Ap1_RamonUreña.DAL
+﻿using Microsoft.EntityFrameworkCore;
+using p1_Ap1_RamonUreña.Models;
+
+namespace p1_Ap1_RamonUreña.DAL
 {
-    public class Context
+    public class Context : DbContext
     {
+        public Context(DbContextOptions<Context> options) : base(options)
+        {
+
+        }
+
+        public DbSet<Registro> Registro { get; set; }
 
     }
 }
