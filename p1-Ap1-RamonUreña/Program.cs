@@ -1,4 +1,5 @@
 using p1_Ap1_RamonUreña.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace p1_Ap1_RamonUreña
 {
@@ -11,6 +12,8 @@ namespace p1_Ap1_RamonUreña
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 
             var app = builder.Build();
 
