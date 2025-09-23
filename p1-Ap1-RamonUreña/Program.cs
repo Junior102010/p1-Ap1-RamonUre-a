@@ -15,11 +15,11 @@ namespace p1_Ap1_RamonUreña;
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            var ConStr = builder.Configuration.GetConnectionString("SqlConStr")
-                ;
-        builder.Services.AddScoped<RegistroServices>();
-        builder.Services.AddDbContext<Context>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
+            var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+        
+            builder.Services.AddDbContextFactory<Context>(options => options.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
+
+            builder.Services.AddScoped<RegistroServices>();
 
             var app = builder.Build();
 
