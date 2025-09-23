@@ -2,8 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using p1_Ap1_RamonUreña.Components;
 using p1_Ap1_RamonUreña.DAL;
 
-namespace p1_Ap1_RamonUreña
-{
+namespace p1_Ap1_RamonUreña;
     public class Program
     {
         public static void Main(string[] args)
@@ -41,4 +40,4 @@ namespace p1_Ap1_RamonUreña
             app.Run();
         }
     }
-}
+

@@ -1,8 +1,11 @@
-﻿namespace p1_Ap1_RamonUreña.Models
-{
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace p1_Ap1_RamonUreña.Models;
+
     public class Registro
     {
 
-        public int Id { get; set; }
+        [Key]
+        public int RegistroId { get; set; }
     }
-}
+
