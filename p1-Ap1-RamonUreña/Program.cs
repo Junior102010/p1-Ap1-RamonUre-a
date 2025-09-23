@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using p1_Ap1_RamonUreña.Components;
 using p1_Ap1_RamonUreña.DAL;
+using p1_Ap1_RamonUreña.Services;
 
 namespace p1_Ap1_RamonUreña;
     public class Program
@@ -16,7 +17,8 @@ namespace p1_Ap1_RamonUreña;
 
             var ConStr = builder.Configuration.GetConnectionString("SqlConStr")
                 ;
-            builder.Services.AddDbContext<Context>(options =>
+        builder.Services.AddScoped<RegistroServices>();
+        builder.Services.AddDbContext<Context>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
 
             var app = builder.Build();
