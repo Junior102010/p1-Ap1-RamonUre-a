@@ -7,7 +7,7 @@ namespace p1_Ap1_RamonUreña.Services;
 
 public class RegistroServices(IDbContextFactory<Context> DbFactory)
 {
-    public async Task<List<Registro>> Listar(Expression<Func<Registro, bool>> criterio)
+    public async Task<List<EntradasHuacales>> Listar(Expression<Func<EntradasHuacales, bool>> criterio)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Registro.Where(criterio).AsNoTracking().ToListAsync();
