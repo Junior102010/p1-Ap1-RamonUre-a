@@ -1,0 +1,68 @@
+﻿@page "/Huacales/Creates"
+
+@inject HuacalesServices huacalesServices
+@inject NavigationManager navigationManager
+
+@rendermode InteractiveServer
+
+<PageTitle>Agregar Entradas</PageTitle>
+<div class="container">
+	<div class="card shadow-lg">
+		<div class="card-header">
+			<label class="form-label">Agregar Entradas</label>
+		</div>
+
+		<div class="card-body">
+			<div class="col-3">
+				<label class="form-label">Nombre del Cliente</label>
+				<input class="form-control col-3" @bind ="Huacales.NombreCliente"  placeholder="Escribe " />
+			</div>
+
+			<div class="col-2">
+				<label class="form-label">Cantidad</label>
+				<InputNumber class="form-control" @bind-Value="Huacales.Cantidad">sss</InputNumber>
+			</div>
+			<div class="col-2">
+				<label class="form-label">Precio</label>
+				<InputNumber class="form-control " @bind-value="Huacales.Precio" ></InputNumber>
+			</div>
+			
+		</div>
+		<footer class="card-footer">
+			<div class="row">
+				<div class="col-1"><button type="button" class="btn btn-outline-success" @onclick="Guardar">Guardar</button></div>
+				
+				<div class="col-1"><button type="button" class="btn btn-outline-primary" @onclick="Eliminar">Eliminar</button></div>
+				
+				<div class="col-2"><a href="/Huacales/Index" class="btn btn-outline-danger">Volver</a></div>
+				
+			</div>
+		</footer>
+	</div>
+</div>
+
+@code {
+
+	public EntradasHuacales Huacales { get; set; } = new EntradasHuacales();
+
+	public List<EntradasHuacales> ListaHuacales { get; set; } = new List<EntradasHuacales>();
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		ListaHuacales = await huacalesServices.Listar(h => h.IdEntrada > 0);
+	}
+
+	public async Task Guardar()
+	{
+		huacalesServices.Guardar(Huacales);
+		navigationManager.NavigateTo("/Huacales/Index");
+	}
+
+	public async Task Eliminar()
+	{
+		huacalesServices.Eliminar(Huacales);
+		navigationManager.NavigateTo("/Huacales/Index");
+
+	}
+}

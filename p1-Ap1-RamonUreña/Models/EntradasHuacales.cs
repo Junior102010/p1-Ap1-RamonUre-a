@@ -6,6 +6,15 @@ namespace p1_Ap1_RamonUreña.Models;
     {
 
         [Key]
-        public int RegistroId { get; set; }
+        public int IdEntrada { get; set; }
+
+        [Required]
+        public DateTime Fecha { get; set; } = DateTime.UtcNow;
+        [Required]
+        public string NombreCliente { get; set; }
+        [Required]
+        public int Cantidad { get; set; }
+        [Required]
+        public int Precio {  get; set; }
     }
 

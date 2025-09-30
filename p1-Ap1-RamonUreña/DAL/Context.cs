@@ -10,7 +10,7 @@ namespace p1_Ap1_RamonUreña.DAL;
 
         }
 
-        public DbSet<EntradasHuacales> Registro { get; set; }
+        public DbSet<EntradasHuacales> EntradasHuacales { get; set; }
 
     }
 
