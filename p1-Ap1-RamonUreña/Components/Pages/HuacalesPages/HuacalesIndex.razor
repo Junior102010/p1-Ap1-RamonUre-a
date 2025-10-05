@@ -9,7 +9,7 @@
 <div class="container">
 	<div class="card shadow-lg">
 		<div class="card-header">
-			<label class="form-label"><strong>Registro de Entradas de Huacales</strong></label>
+			<label class="card-title"><strong>Registro de Entradas de Huacales</strong></label>
 		</div>
 
 		<div class="card-body">
@@ -38,16 +38,17 @@
 				
 			</div>
 
-			<div class="table table-striped">
+			<div class="table table-striped mt-4">
 
 				<table class="table">
 					<thead>
 						<tr>
 							<th>Id</th>
+							<th>Fecha</th>
 							<th>Cliente</th>
 							<th>Cantidad</th>
 							<th>Precio</th>
-							<th>Fecha</th>
+							<th>Importe</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -55,12 +56,14 @@
 					<tbody>
 						@foreach(var h in ListaHuacales)
 						{
+							double import = @h.Precio * @h.Cantidad;
 							<tr>
 								<th>@h.IdEntrada</th>
+								<th>@h.Fecha.ToString("dd/MM/yyyy")</th>
 								<th>@h.NombreCliente</th>
 								<th>@h.Cantidad</th>
-								<th>@h.Precio</th>
-								<th>@h.Fecha</th>
+								<th>@h.Precio $</th>
+								<th>@import</th>
 								<th>
 									<a href="/Huacales/Edits/@h.IdEntrada" class="btn btn-outline-primary">Editar</a>
 								</th>
@@ -73,8 +76,8 @@
 		</div>
 		<footer class="card-footer">
 			<div class="row">
-				<label class="form-label">Total de Entradas @ListaHuacales.Count()</label>
-
+				<label class="form-label col-2">Cantidad Total: @ListaHuacales.Sum(e => e.Cantidad)</label>
+				<label class="form-label col-2">Importe Total: @ListaHuacales.Sum(e => e.Precio * e.Cantidad)</label>
 			</div>
 		</footer>
 	</div>

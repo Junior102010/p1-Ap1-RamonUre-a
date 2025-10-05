@@ -19,7 +19,7 @@ public class HuacalesServices(IDbContextFactory<Context> DbFactory)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         
-        return await contexto.EntradasHuacales.AnyAsync(h => h.IdEntrada == Entrada.IdEntrada);
+        return await contexto.EntradasHuacales.Where(h => h.IdEntrada == Entrada.IdEntrada).ExecuteDeleteAsync() > 0;
     }
     public async Task<bool> Existe(int id) 
     {
