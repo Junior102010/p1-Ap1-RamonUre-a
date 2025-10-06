@@ -9,21 +9,48 @@
 <div class="container">
 	<div class="card shadow-lg">
 		<div class="card-header">
-			<label class="form-label"><strong>Registro de Entradas de Huacales</strong></label>
+			<h5 class="card card-title">
+				<strong>Registro de Entradas de Huacales</strong
+			</h5>
 		</div>
 
 		<div class="card-body">
 			<div class="row">
+				<div class="row">
+					<label class="form-label col-2"><strong>Fecha Minima:</strong></label>
+					<label class="form-label col-2"><strong>Fecha Maxima:</strong></label>
+					
+				</div>
+				<div class="row">
+					<div class="col-2">
+
+						<input type="date" class="form-control col-3" @bind="FechaMin" />
+					</div>
+
+
+					<div class="col-2">
+
+						<input type="date" class="form-control col-1" @bind="FechaMax" />
+					</div>
+					<div class="col-2">
+						<button type="button" class="btn btn-outline-primary" @onclick="BuscarFecha">Buscar en Rango</button>
+
+					</div>
+				</div>
+
+			</div>
+			<div class="row mt-4">
+
 				<label class="form-label col-2"><strong>Filtrar:</strong></label>
 				<label class="form-label col-3"><strong>Buscar</strong></label>
 			</div>
 			<div class="row mt-1">
+					
+			
 				<div class="col-2">
 					<InputSelect class="form-select col-2" @bind-Value="Filtro">
 						<option value="" selected disabled>-Seleccione una Opcion</option>
 						<option value="Nombre">Nombre</option>
-						
-						
 					</InputSelect>
 				</div>
 				<div class="col-3">
@@ -38,16 +65,17 @@
 				
 			</div>
 
-			<div class="table table-striped">
+			<div class="table table-striped mt-4">
 
 				<table class="table">
 					<thead>
 						<tr>
 							<th>Id</th>
+							<th>Fecha</th>
 							<th>Cliente</th>
 							<th>Cantidad</th>
 							<th>Precio</th>
-							<th>Fecha</th>
+							<th>Importe</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -55,12 +83,14 @@
 					<tbody>
 						@foreach(var h in ListaHuacales)
 						{
+							double import = @h.Precio * @h.Cantidad;
 							<tr>
 								<th>@h.IdEntrada</th>
+								<th>@h.Fecha.ToString("dd/MM/yyyy")</th>
 								<th>@h.NombreCliente</th>
 								<th>@h.Cantidad</th>
-								<th>@h.Precio</th>
-								<th>@h.Fecha</th>
+								<th>@h.Precio $</th>
+								<th>@import</th>
 								<th>
 									<a href="/Huacales/Edits/@h.IdEntrada" class="btn btn-outline-primary">Editar</a>
 								</th>
@@ -73,8 +103,8 @@
 		</div>
 		<footer class="card-footer">
 			<div class="row">
-				<label class="form-label">Total de Entradas @ListaHuacales.Count()</label>
-
+				<label class="form-label col-2">Cantidad Total: @ListaHuacales.Sum(e => e.Cantidad)</label>
+				<label class="form-label col-2">Importe Total: @ListaHuacales.Sum(e => e.Precio * e.Cantidad)</label>
 			</div>
 		</footer>
 	</div>
@@ -85,31 +115,54 @@
 
 	public List<EntradasHuacales> ListaHuacales { get; set; } = new List<EntradasHuacales>();
 
+	public DateTime FechaMin { get; set; }
+	public DateTime FechaMax { get; set; }
+
 	public string Filtro { get; set; }
 	public string ValorFiltro { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
+		FechaMin = DateTime.Now;
+		FechaMax = FechaMin.AddYears(1);
 		ListaHuacales = await huacalesServices.Listar(criterio: h => h.IdEntrada > 0);
 	}
 
 	public async Task Buscar()
 	{
-		ValorFiltro.Trim().ToLower();
+
 
 		if(ValorFiltro != string.Empty)
 		{
+			ValorFiltro = ValorFiltro.Trim().ToLower();
+
 			if(Filtro == "Nombre")
 			{
-				ListaHuacales = await huacalesServices.Listar(criterio: H => H.NombreCliente.Trim().ToLower().Contains(ValorFiltro));
+				ListaHuacales = await huacalesServices.Listar(criterio: H => H.NombreCliente.Trim().ToLower().Contains(ValorFiltro) && H.Fecha >= FechaMin && H.Fecha <= FechaMax);
 			}
-			
+
 		}
 		else
 		{
 			ListaHuacales = await huacalesServices.Listar(criterio: h => h.IdEntrada > 0);
 		}
 
-		
 	}
+	public async Task BuscarFecha()
+	{
+		if ((FechaMin != null && FechaMax != null) && FechaMax > FechaMin)
+		{
+			ListaHuacales = await huacalesServices.Listar(criterio: h => h.Fecha >= FechaMin && h.Fecha <= FechaMax);
+		}
+		else if (FechaMin != null && FechaMax == null)
+		{
+			ListaHuacales = await huacalesServices.Listar(criterio: h => h.Fecha >= FechaMin);
+		}
+		else if (FechaMax != null && FechaMin == null)
+		{
+			ListaHuacales = await huacalesServices.Listar(criterio: h => h.Fecha <= FechaMax);
+		}
+	}
+
+
 }

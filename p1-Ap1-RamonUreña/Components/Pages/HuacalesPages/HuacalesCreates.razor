@@ -13,37 +13,51 @@
 		</div>
 
 		<div class="card-body">
-			<div class="col-3">
-				<label class="form-label">Nombre del Cliente</label>
-				<input class="form-control col-3" @bind ="Huacales.NombreCliente"  placeholder="Escribe " />
-			</div>
+			<EditForm Model="Huacales" OnValidSubmit="Guardar">
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				<div class="col-3">
+					<label class="form-label">Fecha</label>
+					<input type="date" class="form-control col-3" @bind="Huacales.Fecha" />
+				</div>
 
-			<div class="col-2">
-				<label class="form-label">Cantidad</label>
-				<InputNumber class="form-control" @bind-Value="Huacales.Cantidad">sss</InputNumber>
-			</div>
-			<div class="col-2">
-				<label class="form-label">Precio</label>
-				<InputNumber class="form-control " @bind-value="Huacales.Precio" ></InputNumber>
-			</div>
+				<div class="col-3">
+					<label class="form-label">Nombre del Cliente</label>
+					<input class="form-control col-3" @bind ="Huacales.NombreCliente"  placeholder="Escribe " />
+				</div>
+
+				<div class="col-2">
+					<label class="form-label">Cantidad</label>
+					<InputNumber class="form-control" @bind-Value="Huacales.Cantidad" min="1"></InputNumber>
+				</div>
+				<div class="col-2">
+					<label class="form-label">Precio</label>
+					<InputNumber class="form-control " @bind-value="Huacales.Precio" min="1"></InputNumber>
+				</div>
 			
+				<footer class="card-footer">
+					<div class="row">
+						<div class="col-1"><button type="button" class="btn btn-outline-success" @onclick="Guardar">Guardar</button></div>
+				
+						<div class="col-1"><button type="button" class="btn btn-outline-primary" @onclick="Eliminar">Eliminar</button></div>
+				
+						<div class="col-2"><a href="/Huacales/Index" class="btn btn-outline-danger">Volver</a></div>
+				
+					</div>
+				</footer>
+			</EditForm>
 		</div>
-		<footer class="card-footer">
-			<div class="row">
-				<div class="col-1"><button type="button" class="btn btn-outline-success" @onclick="Guardar">Guardar</button></div>
-				
-				<div class="col-1"><button type="button" class="btn btn-outline-primary" @onclick="Eliminar">Eliminar</button></div>
-				
-				<div class="col-2"><a href="/Huacales/Index" class="btn btn-outline-danger">Volver</a></div>
-				
-			</div>
-		</footer>
 	</div>
 </div>
 
+
 @code {
 
-	public EntradasHuacales Huacales { get; set; } = new EntradasHuacales();
+	public EntradasHuacales Huacales { get; set; } = new EntradasHuacales
+	{
+		Cantidad = 1,
+		Precio = 1
+	};
 
 	public List<EntradasHuacales> ListaHuacales { get; set; } = new List<EntradasHuacales>();
 
@@ -55,14 +69,21 @@
 
 	public async Task Guardar()
 	{
-		huacalesServices.Guardar(Huacales);
-		navigationManager.NavigateTo("/Huacales/Index");
+		if(Huacales.Precio < 1 || Huacales.Cantidad < 1)
+		{
+			return;
+		}
+		else
+		{
+			huacalesServices.Guardar(Huacales);
+			navigationManager.NavigateTo("/Huacales/Index");
+		}
+		
 	}
 
 	public async Task Eliminar()
 	{
 		huacalesServices.Eliminar(Huacales);
 		navigationManager.NavigateTo("/Huacales/Index");
-
 	}
 }

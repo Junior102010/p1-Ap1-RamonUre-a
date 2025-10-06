@@ -13,8 +13,10 @@ namespace p1_Ap1_RamonUreña.Models;
         [Required]
         public string NombreCliente { get; set; }
         [Required]
-        public int Cantidad { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "El Valor Minimo es 1")]
+    public int Cantidad { get; set; }
         [Required]
-        public int Precio {  get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "El Valor Minimo es 1")]
+        public double Precio {  get; set; }
     }
 
