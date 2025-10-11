@@ -1,54 +1,144 @@
 ﻿@page "/Huacales/Creates"
 
 @inject HuacalesServices huacalesServices
+@inject ToastService toastService
 @inject NavigationManager navigationManager
 
 @rendermode InteractiveServer
 
 <PageTitle>Agregar Entradas</PageTitle>
-<div class="container">
-	<div class="card shadow-lg">
-		<div class="card-header">
-			<label class="form-label">Agregar Entradas</label>
-		</div>
+<Toasts class="p-3" AutoHide="true" Delay="5000" Placement="ToastsPlacement.TopRight" />
+<EditForm Model="Huacales" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
+	<div class="container">
+		<div class="card shadow-lg">
+			<div class="card-header">
+				<label class="form-label">Agregar Entradas</label>
+			</div>
 
-		<div class="card-body">
-			<EditForm Model="Huacales" OnValidSubmit="Guardar">
-				<DataAnnotationsValidator />
-				<ValidationSummary />
-				<div class="col-3">
-					<label class="form-label">Fecha</label>
-					<input type="date" class="form-control col-3" @bind="Huacales.Fecha" />
-				</div>
-
-				<div class="col-3">
-					<label class="form-label">Nombre del Cliente</label>
-					<input class="form-control col-3" @bind ="Huacales.NombreCliente"  placeholder="Escribe " />
-				</div>
-
-				<div class="col-2">
-					<label class="form-label">Cantidad</label>
-					<InputNumber class="form-control" @bind-Value="Huacales.Cantidad" min="1"></InputNumber>
-				</div>
-				<div class="col-2">
-					<label class="form-label">Precio</label>
-					<InputNumber class="form-control " @bind-value="Huacales.Precio" min="1"></InputNumber>
-				</div>
+			<div class="card-body">
 			
-				<footer class="card-footer">
-					<div class="row">
-						<div class="col-1"><button type="button" class="btn btn-outline-success" @onclick="Guardar">Guardar</button></div>
-				
-						<div class="col-1"><button type="button" class="btn btn-outline-primary" @onclick="Eliminar">Eliminar</button></div>
-				
-						<div class="col-2"><a href="/Huacales/Index" class="btn btn-outline-danger">Volver</a></div>
-				
+					<div class="col-3">
+						<label class="form-label">Fecha</label>
+						<input type="date" class="form-control col-3" @bind="Huacales.Fecha" />
+					<ValidationMessage For="@(() => Huacales.Fecha)"/>
 					</div>
-				</footer>
-			</EditForm>
+
+					<div class="col-3">
+						<label class="form-label">Nombre del Cliente</label>
+						<input class="form-control col-3" @bind ="Huacales.NombreCliente"  placeholder="Escribe " />
+					<ValidationMessage For="@(() => Huacales.NombreCliente)" />
+					</div>
+
+					<div class="container mt-4">
+						<div class="border border-success">
+							<div class="card card-header">
+							<h3 class="form-label"><strong>Agregar Huacales</strong></h3>
+							</div>
+							<div class="card card-body">
+
+								<div class="row">
+
+									<div class="col-4">
+										<label class="form-label"><strong>Tipos de Huacales</strong></label>
+									</div>
+									<div class="col-2">
+										<label class="form-label"><strong>Cantidad</strong></label>
+									</div>
+
+									<div class="col-2">
+										<label class="form-label"><strong>Precio</strong></label>
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="col-4">
+										<InputSelect class="form-select" @bind-Value="@Detalle.TiposId">
+											<option value="" selected disabled>-Seleccione-</option>
+
+											@foreach(var T in ListaTipos)
+											{
+												<option value="@T.TipoId">@T.TipoColor @T.TipoTamano - @T.Existencia</option>
+											}
+
+										</InputSelect>
+									</div>
+
+									<div class="col-2">
+										<InputNumber class="form-control" @bind-Value="@Detalle.Cantidad" >
+										</InputNumber>
+									</div>
+
+									<div class="col-2">
+										<InputNumber class="form-control" @bind-Value="@Detalle.Precio" >
+										</InputNumber>
+									</div>
+
+									<div class="col-2">
+
+									<div class="col-1"><button type="button" class="btn btn-outline-success" @onclick="GuardarDetalle">Agregar</button></div>
+
+									</div>
+
+								</div>
+								<div class="row">
+									<table class="table table-striped mt-4">
+
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Color</th>
+													<th>Tamaño</th>
+													<th>Cantidad</th>
+													<th>Precio</th>
+													<th>Importe</th>
+													<th>Eliminar</th>
+												</tr>
+												
+											</thead>
+										<tbody>
+											@foreach (var D in Huacales.DetallesHuacales)
+											{
+												double importe = D.Precio * D.Cantidad;
+												<tr>
+													<td>@D.TiposId</td>
+													<td>@ListaTipos.FirstOrDefault(e => e.TipoId == D.TiposId)?.TipoColor</td>
+													<td>@ListaTipos.FirstOrDefault(e => e.TipoId == D.TiposId)?.TipoTamano</td>
+													<td>@D.Cantidad</td>
+													<td>@D.Precio</td>
+													<td>@importe</td>
+													<td>
+														<button type="button" class="btn btn-outline-danger" @onclick="()=> EliminarDetalle(D)"><span class="bi bi-trash"></span></button>
+													</td>
+												</tr>
+										}
+										</tbody>
+
+									</table>
+									<div class="row">
+									<label class="form-label col-2">Cantidad Total: @Huacales.Cantidad</label>
+									<label class="form-label col-2">Importe Total: @Huacales.Importe</label>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+					<footer class="card-footer">
+						<div class="row">
+							@if (!Ok)
+							{
+								<div class="col-1"><button type="submit" class="btn btn-outline-success" >Guardar</button></div>	
+							}
+							<div class="col-2"><a href="/Huacales/Index" class="btn btn-outline-danger">Volver</a></div>
+				
+						</div>
+					</footer>
+			</div>
 		</div>
 	</div>
-</div>
+</EditForm>
 
 
 @code {
@@ -56,34 +146,55 @@
 	public EntradasHuacales Huacales { get; set; } = new EntradasHuacales
 	{
 		Cantidad = 1,
-		Precio = 1
+		Importe = 1
 	};
 
-	public List<EntradasHuacales> ListaHuacales { get; set; } = new List<EntradasHuacales>();
+	public List<TiposHuacales> ListaTipos { get; set; } = new List<TiposHuacales>();
+
+	public List<DetallesHuacales> ListaDetalles { get; set; } = new List<DetallesHuacales>();
+
+	public DetallesHuacales Detalle { get; set; } = new DetallesHuacales();
+
+	
 
 
 	protected override async Task OnInitializedAsync()
 	{
-		ListaHuacales = await huacalesServices.Listar(h => h.IdEntrada > 0);
-	}
-
-	public async Task Guardar()
-	{
-		if(Huacales.Precio < 1 || Huacales.Cantidad < 1)
-		{
-			return;
-		}
-		else
-		{
-			huacalesServices.Guardar(Huacales);
-			navigationManager.NavigateTo("/Huacales/Index");
-		}
+		ListaTipos = await huacalesServices.ListarTipos();
 		
 	}
 
-	public async Task Eliminar()
+	public bool Ok { get; set; } = false;
+
+	public async Task Guardar()
 	{
-		huacalesServices.Eliminar(Huacales);
-		navigationManager.NavigateTo("/Huacales/Index");
+
+		Ok = await huacalesServices.Guardar(Huacales);
+		if(Ok)
+		{
+			toastService.ShowSuccess("Se ha guardado Correctamente");
+		}
+		else
+		{
+			toastService.ShowError("No se podido guardar la entrada");
+		}
+
+	}
+
+	public void GuardarDetalle()
+	{
+		Huacales.DetallesHuacales.Add(Detalle);
+
+		Huacales.Cantidad = Huacales.DetallesHuacales.Sum(e => e.Cantidad);
+		Huacales.Importe = Huacales.DetallesHuacales.Sum(e => e.Cantidad * e.Precio);
+		Detalle = new DetallesHuacales();
+	}
+
+	public void EliminarDetalle(DetallesHuacales d)
+	{
+		Huacales.DetallesHuacales.Remove(d);
+		Huacales.Cantidad = Huacales.DetallesHuacales.Sum(e => e.Cantidad);
+		Huacales.Importe = Huacales.DetallesHuacales.Sum(e => e.Cantidad * e.Precio);
+		Detalle = d;
 	}
 }
