@@ -19,6 +19,8 @@ namespace p1_Ap1_RamonUreña;
         
             builder.Services.AddDbContextFactory<Context>(options => options.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
 
+            builder.Services.AddBlazorBootstrap();
+
             builder.Services.AddScoped<HuacalesServices>();
 
             var app = builder.Build();
